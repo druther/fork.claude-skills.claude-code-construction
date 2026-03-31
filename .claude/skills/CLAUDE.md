@@ -217,6 +217,122 @@ Domain reference files are in `reference/`. Read only what you need:
 - `scale_factors.yaml` — architectural/civil/metric scale lookup
 - `ada_requirements.yaml` — ADA accessibility requirements
 - `ibc_egress_tables.yaml` — IBC egress width, travel distance, occupancy tables
+- `pe_expertise/` — PE behavioral intelligence + 23 per-division scope files (see PE Expertise section below)
+
+---
+
+## Document Authority & Precedence
+
+Apply these rules automatically when answering ANY question about construction documents.
+
+### Contract Document Hierarchy
+
+When information conflicts between documents, the following precedence governs. Do not present conflicting information as equally valid without stating which source controls.
+
+```
+1. Agreement (Owner–Contractor)
+2. Modifications (Change Orders, in reverse chronological order)
+3. Addenda (in reverse chronological order — latest governs)
+4. Supplementary Conditions
+5. General Conditions (AIA A201 or ConsensusDocs equivalent)
+6. Specifications (Project Manual)
+7. Drawings
+```
+
+Specifications and Drawings are complementary, not ranked against each other in all cases. When they conflict, flag both sources and recommend an RFI. Some contracts explicitly rank one above the other — check the General Conditions for the project-specific precedence clause.
+
+### Drawing Precedence Rules
+
+When drawings conflict with each other:
+
+- **Large scale governs over small scale.** A detail at 1-1/2" = 1'-0" governs over a plan at 1/4" = 1'-0".
+- **Figured dimensions govern over scaled dimensions.** Never scale a drawing to derive a dimension. If a dimension is not noted, flag it.
+- **Specific notes govern over general notes.** A note on a detail governs over a general note on the cover sheet.
+- **Plans govern over schedules for location and extent.** Schedules govern over plans for type, material, and finish designations.
+- **Later-dated sheets govern over earlier-dated sheets.** Verify revision deltas and addenda applicability.
+- **Architectural dimensions govern for finished space dimensions.** Structural dimensions govern for structural member sizes and grid spacing.
+
+### Specification Precedence Rules
+
+- **Division 01 applies to all other divisions** unless a specific division explicitly states otherwise.
+- **Within a section, the more stringent requirement governs** unless the contract states otherwise.
+- **"Or equal" vs. "or approved equal":** "Or equal" allows substitution if criteria are met. "Or approved equal" requires explicit architect approval. Never conflate these.
+- **Reference standards** (ASTM, ANSI, ADA, IBC, etc.) cited within specs are incorporated by reference.
+
+### Addenda & Revision Chain of Custody
+
+**MANDATORY CHECK:** Before returning ANY specification section or drawing detail as a response, verify the addenda log and revision history for superseding changes.
+
+1. Check the project addenda log (General sheets or Project Manual front matter).
+2. Check the revision delta/cloud history on the referenced sheet.
+3. Check the ASI log if available.
+4. If a superseding document exists, return the most current version and note the revision history.
+5. If the addenda log or revision history is not available, flag this as a gap.
+
+### Specification-to-Drawing Binding
+
+- **Drawings define:** Location, quantity, spatial relationships, dimensions, and geometric configuration.
+- **Specifications define:** Material quality, performance standards, manufacturers/products, installation methods, QA/testing, warranties.
+
+**RULE:** Never answer a material or performance question from drawings alone. Never answer a location or extent question from specifications alone. Always cross-reference both.
+
+### Scope Exclusion Language
+
+- **NIC (Not In Contract):** Work is required but covered under a separate contract or by the Owner.
+- **NFC (Not in This Contract):** Same as NIC in most usage.
+- **By Others:** Work is required and will be performed by another trade. Identify who.
+- **Future:** Shown for reference only, not part of current scope.
+
+When these terms appear, flag them and attempt to identify the responsible party. If unknown, flag as a coordination gap.
+
+---
+
+## Output Standards
+
+When responding about construction documents:
+
+- **Source traceability:** Every claim must cite its specific source — `[Sheet A2.01, Room 204]` or `[Spec Section 07 92 00, Para 3.3.A]` or `[Detail 5/A8.03]`. "Per the drawings" or "per the specs" is never acceptable.
+- **Confidence classification:** Grade every response element as: **CONFIRMED** (consistent across all docs), **PROBABLE** (found in primary source, not all cross-refs checked), **CONFLICTING** (documents disagree — present both with precedence analysis), or **NOT FOUND** (expected information absent — state what was expected and where).
+- **Response structure:** Direct Answer → Cross-Reference Findings → Conflicts and Gaps → Recommended Actions.
+- **RFI drafting:** When conflicts/gaps are found, use the template in `reference/pe_expertise/rfi_template.md`.
+
+---
+
+## PE Expertise — Scope-Triggered Loading
+
+**For document review, coordination analysis, or any query requiring PE judgment**, first load `reference/pe_expertise/pe_behavior.md`. This contains RFI/submittal authority rules, construction sequencing logic, red flags, coordination matrix, verification checks, scope gap detection, and project learning protocol.
+
+**Then load scope file(s)** matching the query from `reference/pe_expertise/`. Load ALL that match — most queries trigger 1-2 files.
+
+| Div | Scope file | Trigger keywords |
+|---|---|---|
+| 01 | `scope-01-general.md` | submittal, closeout, phasing, allowance, alternate, substitution, warranty |
+| 02 | `scope-02-existing.md` | demolition, existing conditions, abatement, salvage, selective demo |
+| 03 | `scope-03-concrete.md` | concrete, footing, foundation, slab, rebar, embed, anchor bolt, formwork |
+| 04 | `scope-04-masonry.md` | CMU, brick, masonry, mortar, grout, cavity wall, shelf angle |
+| 05 | `scope-05-metals.md` | structural steel, beam, column, joist, decking, misc metals, handrail |
+| 06 | `scope-06-wood-carpentry.md` | blocking, casework, countertop, wood framing, millwork, rough carpentry |
+| 07 | `scope-07-thermal-moisture.md` | waterproofing, roofing, insulation, air barrier, vapor retarder, sealant, flashing, firestopping, fireproofing |
+| 08 | `scope-08-openings.md` | door, window, curtain wall, storefront, glazing, hardware, overhead door |
+| 09 | `scope-09-finishes.md` | drywall, partition, ceiling, flooring, tile, carpet, paint, ACT, wall protection |
+| 10 | `scope-10-specialties.md` | toilet accessories, signage, fire extinguisher, lockers, corner guards |
+| 11 | `scope-11-equipment.md` | kitchen equipment, laundry, dock, residential appliances |
+| 12 | `scope-12-furnishings.md` | furniture, window treatment, casework (if Div 12), countertop (if Div 12) |
+| 13 | `scope-13-special.md` | clean room, swimming pool, radiation protection, special construction |
+| 14 | `scope-14-conveying.md` | elevator, escalator, dumbwaiter, conveying |
+| 21 | `scope-21-fire-suppression.md` | sprinkler, standpipe, fire pump, fire suppression, Ansul |
+| 22 | `scope-22-plumbing.md` | plumbing, fixture, pipe, water heater, sanitary, storm, domestic water |
+| 23 | `scope-23-hvac.md` | HVAC, duct, AHU, VAV, chiller, boiler, mechanical, controls |
+| 26 | `scope-26-electrical.md` | electrical, panel, lighting, receptacle, transformer, generator, conduit |
+| 27 | `scope-27-communications.md` | telecom, data cable, fiber, backbone, server room, pathways |
+| 28 | `scope-28-safety-security.md` | fire alarm, access control, CCTV, security, intrusion detection |
+| 31 | `scope-31-earthwork.md` | grading, excavation, earthwork, shoring, dewatering, geotechnical |
+| 32 | `scope-32-exterior.md` | paving, sidewalk, landscape, irrigation, fencing, site furnishing |
+| 33 | `scope-33-utilities.md` | underground utility, sewer, water main, gas, site electrical, storm |
+
+**Multi-scope queries:** When a query spans multiple scopes (e.g., "is the curtain wall air barrier continuous to the roof membrane?"), load ALL matching scope files.
+
+---
 
 ## Key Conventions
 
