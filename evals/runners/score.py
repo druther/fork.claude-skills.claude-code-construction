@@ -19,18 +19,14 @@ RESULTS_DIR = os.path.join(os.path.dirname(os.path.dirname(__file__)), "results"
 SKILL_WEIGHTS = {
     "project-onboarding": 3.0,
     "sheet-index-builder": 3.0,
-    "drawing-reader": 3.0,
-    "bulk-sheet-extraction": 2.0,
+    "sheet-splitter": 3.0,
+    "spec-splitter": 3.0,
     "spec-parser": 2.0,
     "schedule-extractor": 2.0,
-    "quantity-takeoff": 2.0,
-    "code-compliance-checker": 2.0,
     "submittal-log-generator": 2.0,
-    "cross-reference-navigator": 1.5,
-    "scale-measurement": 1.5,
-    "rfi-drafter": 1.5,
-    "qa-qc-auditor": 1.0,
-    "coordination-report": 1.0,
+    "bid-tabulator": 2.0,
+    "code-researcher": 2.0,
+    "subcontract-writer": 2.0,
 }
 
 def score_result(result_path):

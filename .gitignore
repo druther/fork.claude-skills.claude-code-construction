@@ -1,5 +1,13 @@
+# Deprecated skills (kept locally for reference, not shipped)
+.claude/skills/_deprecated_*/
+
 # Dev skills (not production-ready)
 .claude/skills/_dev/
+
+# Legacy template system (removed — SKILL.md files are canonical)
+_templates/
+*.tmpl
+vars.yaml
 
 # Python
 __pycache__/

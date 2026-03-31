@@ -24,24 +24,24 @@ from evals.runners.skills.schedule_extractor import run_schedule_extractor
 from evals.runners.skills.project_onboarding import run_project_onboarding
 from evals.runners.skills.submittal_log import run_submittal_log_generator
 from evals.runners.skills.sheet_index import run_sheet_index_builder
-from evals.runners.skills.vision_skills import (
-    run_cross_reference_navigator,
-    run_code_compliance_checker,
-)
 from evals.runners.skills.spec_parser import run_spec_parser
+from evals.runners.skills.bid_tabulator import run_bid_tabulator
+from evals.runners.skills.subcontract_writer import run_subcontract_writer
+from evals.runners.skills.code_researcher import run_code_researcher
 
 SKILL_RUNNERS = {
     "schedule-extractor": run_schedule_extractor,
     "project-onboarding": run_project_onboarding,
     "submittal-log-generator": run_submittal_log_generator,
     "sheet-index-builder": run_sheet_index_builder,
-    "cross-reference-navigator": run_cross_reference_navigator,
-    "code-compliance-checker": run_code_compliance_checker,
     "spec-parser": run_spec_parser,
+    "bid-tabulator": run_bid_tabulator,
+    "subcontract-writer": run_subcontract_writer,
+    "code-researcher": run_code_researcher,
 }
 
 
-def run(case_path):
+def run(case_path, run_dir_override=None):
     """Load a case JSON and dispatch to the appropriate skill runner."""
     with open(case_path) as f:
         case = json.load(f)
@@ -55,7 +55,8 @@ def run(case_path):
         print(f"Available: {', '.join(sorted(SKILL_RUNNERS.keys()))}")
         return None
 
-    run_dir = create_run_dir(case_id)
+    run_dir = Path(run_dir_override) if run_dir_override else create_run_dir(case_id)
+    run_dir.mkdir(parents=True, exist_ok=True)
     result = runner(case, run_dir)
 
     print(f"\n{'='*60}")
@@ -76,12 +77,13 @@ def list_runners():
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Run a skill for eval")
     parser.add_argument("--case", help="Path to case JSON file")
+    parser.add_argument("--run-dir", help="Use existing run directory (for pre-extracted data)")
     parser.add_argument("--list", action="store_true", help="List available runners")
     args = parser.parse_args()
 
     if args.list:
         list_runners()
     elif args.case:
-        run(args.case)
+        run(args.case, run_dir_override=args.run_dir)
     else:
         parser.print_help()

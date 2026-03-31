@@ -5,7 +5,7 @@ import argparse
 import sys
 
 def crop(image_path, output="cropped.png", anchor=None, width=None, height=None,
-         box=None, padding=0):
+         box=None, padding=0, normalized=False):
     try:
         from PIL import Image
     except ImportError:
@@ -16,9 +16,16 @@ def crop(image_path, output="cropped.png", anchor=None, width=None, height=None,
     img_w, img_h = img.size
 
     if box:
-        # Absolute box: x1,y1,x2,y2 in pixels
-        coords = [int(v) for v in box.split(",")]
-        x1, y1, x2, y2 = coords
+        coords = [float(v) for v in box.split(",")]
+        if normalized:
+            # Normalized 0-1 coordinates: convert to pixels
+            x1 = int(coords[0] * img_w)
+            y1 = int(coords[1] * img_h)
+            x2 = int(coords[2] * img_w)
+            y2 = int(coords[3] * img_h)
+        else:
+            # Absolute box: x1,y1,x2,y2 in pixels
+            x1, y1, x2, y2 = [int(c) for c in coords]
         # Apply padding
         x1 = max(0, x1 - padding)
         y1 = max(0, y1 - padding)
@@ -55,7 +62,8 @@ if __name__ == "__main__":
     parser.add_argument("--anchor", choices=["bottom-right","bottom-left","top-right","top-left","center"])
     parser.add_argument("--width", type=int, help="Crop width in pixels")
     parser.add_argument("--height", type=int, help="Crop height in pixels")
-    parser.add_argument("--box", help="Crop box as x1,y1,x2,y2 in pixels")
+    parser.add_argument("--box", help="Crop box as x1,y1,x2,y2 (pixels, or 0-1 with --normalized)")
+    parser.add_argument("--normalized", action="store_true", help="Interpret --box as normalized 0-1 coordinates")
     parser.add_argument("--padding", type=int, default=0, help="Padding around box in pixels")
     args = parser.parse_args()
-    crop(args.image, args.output, args.anchor, args.width, args.height, args.box, args.padding)
+    crop(args.image, args.output, args.anchor, args.width, args.height, args.box, args.padding, args.normalized)

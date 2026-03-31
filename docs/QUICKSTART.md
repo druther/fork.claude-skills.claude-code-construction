@@ -2,7 +2,7 @@
 
 ## What This Is
 
-Construction skills for Claude Code that let you navigate drawings, extract schedules, parse specs, and check code compliance — all from your terminal or IDE.
+Construction skills for Claude Code that let you navigate drawings, extract schedules, parse specs, tabulate bids, and generate subcontracts — all from your terminal or IDE.
 
 **These skills work standalone** with any construction PDFs using Claude Code's built-in vision and PDF tools. No additional platform required. AgentCM integration is optional and makes skills faster with pre-indexed data.
 
@@ -58,11 +58,9 @@ Claude will:
 
 ## Try It: Read a Drawing
 
-Point Claude at any drawing sheet:
+Point Claude at any drawing sheet and ask about it — drawing reading is built into the core skills:
 
-```
-/drawing-reader A-1.1
-```
+> "Read sheet A-1.1 and tell me what rooms are shown"
 
 Claude will rasterize the sheet to a PNG and use vision to describe what's on it — room layouts, door tags, section cuts, detail callouts, and more.
 
@@ -124,12 +122,13 @@ See [Troubleshooting](TROUBLESHOOTING.md) for common issues and fixes.
 |-------|-------------|
 | `/project-onboarding` | Index and classify all project files |
 | `/sheet-index-builder` | Build a drawing sheet index from title blocks |
-| `/drawing-reader` | Read and interpret a specific drawing sheet |
+| `/sheet-splitter` | Split bound drawing set into individual sheet PDFs |
 | `/spec-splitter` | Split bound project manual into individual spec PDFs |
 | `/spec-parser` | Parse a spec section and extract requirements |
 | `/schedule-extractor` | Extract schedule data from drawings to Excel |
 | `/submittal-log-generator` | Extract submittal requirements from specs to Excel |
-| `/cross-reference-navigator` | Trace detail callouts and section references between sheets |
-| `/code-compliance-checker` | Preliminary IBC/ADA code screening (not a PE substitute) |
+| `/bid-tabulator` | Tabulate multiple subcontractor bids into comparison spreadsheet |
+| `/code-researcher` | Deep research on building codes and jurisdiction requirements |
+| `/subcontract-writer` | Generate scope-specific subcontract from firm's template |
 
-`drawing-conventions` runs automatically in the background — it provides Claude with construction domain knowledge (sheet numbering, symbols, abbreviations) whenever you're working with drawings.
+Drawing reading, cross-reference navigation, and construction domain conventions are built into the core skill set and apply automatically when you work with construction documents.

@@ -14,9 +14,13 @@ Extracts structured data from construction specification documents organized by 
 
 ## Data Mode Check
 
-**AgentCM?** Read `.construction/specs/{section_number}.yaml` for pre-parsed data.
+**AgentCM spec processing is not yet implemented.** For now, this skill always parses specs directly from PDF or DOCX files using pdfplumber and vision.
 
-**No AgentCM?** Parse specs directly from PDF or DOCX files.
+When AgentCM spec processing is available, check `.construction/specs/{section_number}.yaml` for pre-parsed data.
+
+If `.construction/` exists, you can still leverage:
+- Previously parsed specs at `.construction/specs/` — if the skill has run before, reuse these
+- `.construction/index/sheet_index.yaml` — may identify schedule sheets that cross-reference spec sections
 
 ## Workflow
 

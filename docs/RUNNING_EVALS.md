@@ -112,6 +112,6 @@ Ground truth is optional — without it, the eval still produces output artifact
 | project-onboarding-01 | project-onboarding | File classification across all document types |
 | sheet-index-builder-01 | sheet-index-builder | Title block reading from 10 sheets |
 | submittal-log-generator-01 | submittal-log-generator | Submittal extraction from specs (SUBMITTALS heading parsing) |
-| cross-reference-navigator-01 | cross-reference-navigator | Tracing detail callouts between sheets |
-| code-compliance-checker-01 | code-compliance-checker | IBC egress analysis |
-| code-compliance-checker-02 | code-compliance-checker | ADA accessibility analysis |
+| bid-tabulator-01 | bid-tabulator | Single-scope bid comparison |
+| code-researcher-01 | code-researcher | Egress code research |
+| subcontract-writer-01 | subcontract-writer | Flooring subcontract from firm template |

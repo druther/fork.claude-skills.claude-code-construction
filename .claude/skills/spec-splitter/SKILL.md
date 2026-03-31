@@ -13,7 +13,9 @@ argument-hint: "<project_manual.pdf> [--output-dir <path>]"
 Splits a bound project manual PDF into individual specification section PDFs. This is valuable for:
 - **Project teams**: Navigate specs by section instead of scrolling a 500+ page PDF
 - **Other skills**: `submittal-log-generator` and `spec-parser` work more precisely on individual section files
-- **AgentCM**: Split files become the basis for `.construction/specs/`
+- **Future AgentCM integration**: Split files will become the basis for `.construction/specs/` when spec processing is implemented
+
+**Note:** AgentCM currently processes drawings only. This skill always runs its own splitting logic using pdfplumber/pymupdf regardless of AgentCM presence.
 
 ## Workflow
 

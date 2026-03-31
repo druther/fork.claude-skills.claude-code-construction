@@ -20,8 +20,8 @@ Long-running skill that processes every specification section to extract submitt
 
 Check data sources in this order:
 
-### Mode 1: AgentCM Graph (fastest)
-If `.construction/specs/` directory exists with parsed YAML files:
+### Mode 1: Previously Parsed Specs (fastest)
+If `.construction/specs/` directory exists with parsed YAML files (from prior `spec-parser` runs or future AgentCM spec processing):
 ```python
 import os, yaml, glob
 specs_dir = os.path.join(os.getcwd(), ".construction", "specs")
@@ -31,7 +31,9 @@ if os.path.isdir(specs_dir):
 ```
 Skip to Step 3 (each YAML already has `submittals_required` extracted).
 
-### Mode 2: PDF with Text Layer (preferred for raw specs)
+**Note:** AgentCM spec processing is not yet implemented. This mode only applies if `spec-parser` has been run previously on this project.
+
+### Mode 2: PDF with Text Layer (primary method)
 Use `pdfplumber` to extract text from spec PDFs. This works well when specs have a searchable text layer (most architect-issued specs do).
 
 ```python

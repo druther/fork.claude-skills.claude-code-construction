@@ -16,11 +16,9 @@ Or install globally:
 
 ## For Contributors
 
-- Production skills live in `.claude/skills/<name>/SKILL.md`
+- Production skills live in `.claude/skills/<name>/SKILL.md` — edit directly
 - Dev/experimental skills live in `.claude/skills/_dev/<name>/` (gitignored, not shipped)
-- SKILL.md files are generated from `SKILL.md.tmpl` templates — edit the `.tmpl`, not the generated file
-- Run `python _templates/generate.py --all` after editing templates
-- Run `python _templates/generate.py --check` to verify generated files are up-to-date
+- Deprecated skills are renamed with `_deprecated_` prefix (prevents skill matching, keeps content accessible)
 
 ### Dev Workflow
 ```bash
@@ -30,7 +28,7 @@ bin/dev-teardown    # Remove symlink
 
 ### Key Rules
 - Each commit = one logical change
-- SKILL.md files are generated — never edit directly
+- SKILL.md files are the canonical source — edit directly
 - `reference/` data is shared across skills — accessed via `${CLAUDE_SKILL_DIR}/../../reference/`
 - `scripts/` Python tools are shared — accessed via `${CLAUDE_SKILL_DIR}/../../scripts/`
 - All skills write findings to `.construction/agent_findings/` via graph entry pattern

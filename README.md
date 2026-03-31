@@ -54,15 +54,14 @@ Every skill outputs structured findings to `.construction/agent_findings/` so th
 |---|---|
 | `project-onboarding` | Index a project, classify files, establish context |
 | `sheet-index-builder` | Build navigable drawing sheet index via vision + title blocks |
-| `drawing-conventions` | Background domain knowledge (auto-applied) |
-| `drawing-reader` | Read and extract info from a specific drawing sheet |
-| `spec-splitter` | Split bound project manual into individual spec section PDFs |
 | `sheet-splitter` | Split bound drawing set into individual sheet PDFs |
+| `spec-splitter` | Split bound project manual into individual spec section PDFs |
 | `spec-parser` | Parse spec sections, extract submittal/product requirements |
 | `schedule-extractor` | Extract structured schedule data from drawings or specs |
 | `submittal-log-generator` | Extract submittal requirements from specs (DRAFT — engineer review required) |
-| `cross-reference-navigator` | Follow detail callouts and cross-sheet references |
-| `code-compliance-checker` | Preliminary code screening (not a substitute for licensed PE review) |
+| `bid-tabulator` | Tabulate multiple subcontractor bids into comparison spreadsheet |
+| `code-researcher` | Deep research on building codes, standards, and jurisdiction requirements |
+| `subcontract-writer` | Generate scope-specific subcontract from firm's template |
 
 ## Repository Structure
 
@@ -78,14 +77,14 @@ construction-skills/
 │       ├── CLAUDE.md                      # Runtime orchestrator (import this)
 │       ├── project-onboarding/SKILL.md
 │       ├── sheet-index-builder/SKILL.md
-│       ├── drawing-conventions/SKILL.md
-│       ├── drawing-reader/SKILL.md
+│       ├── sheet-splitter/SKILL.md
 │       ├── spec-splitter/SKILL.md
 │       ├── spec-parser/SKILL.md
 │       ├── schedule-extractor/SKILL.md
 │       ├── submittal-log-generator/SKILL.md
-│       ├── cross-reference-navigator/SKILL.md
-│       └── code-compliance-checker/SKILL.md
+│       ├── bid-tabulator/SKILL.md
+│       ├── code-researcher/SKILL.md
+│       └── subcontract-writer/SKILL.md
 ├── reference/
 │   ├── csi_masterformat.yaml
 │   ├── drawing_conventions.md
@@ -99,9 +98,6 @@ construction-skills/
 │   ├── excel/
 │   ├── bulk/
 │   └── graph/
-├── _templates/                            # Template system
-│   ├── partials/
-│   └── generate.py
 ├── evals/
 │   ├── EVAL_SPEC.md
 │   ├── test_docs/

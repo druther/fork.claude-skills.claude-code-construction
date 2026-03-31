@@ -5,6 +5,10 @@ import argparse
 import json
 import sys
 from datetime import datetime
+from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
+from shared import safe_output_path
 
 def takeoff_to_xlsx(data_path, output="takeoff.xlsx", project="", sheets=""):
     try:
@@ -87,8 +91,9 @@ def takeoff_to_xlsx(data_path, output="takeoff.xlsx", project="", sheets=""):
     notes["A5"] = f"Generated: {datetime.now().isoformat()}"
     notes["A6"] = "Tool: construction-skills/quantity-takeoff"
 
-    wb.save(output)
-    print(f"OK: {output} ({len(items)} items, {len(categories)} categories)")
+    out = safe_output_path(output)
+    wb.save(str(out))
+    print(f"OK: {out} ({len(items)} items, {len(categories)} categories)")
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Convert takeoff data to Excel")

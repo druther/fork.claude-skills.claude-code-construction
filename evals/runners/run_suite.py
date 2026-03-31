@@ -23,13 +23,14 @@ CASES_DIR = os.path.join(EVALS_DIR, "cases")
 SKILL_PRIORITIES = {
     "project-onboarding": ("P0", 3.0),
     "sheet-index-builder": ("P0", 3.0),
-    "drawing-reader": ("P0", 3.0),
-    "drawing-conventions": ("P0", 3.0),
+    "sheet-splitter": ("P0", 3.0),
+    "spec-splitter": ("P0", 3.0),
     "spec-parser": ("P1", 2.0),
     "schedule-extractor": ("P1", 2.0),
-    "code-compliance-checker": ("P1", 2.0),
     "submittal-log-generator": ("P1", 2.0),
-    "cross-reference-navigator": ("P2", 1.5),
+    "bid-tabulator": ("P1", 2.0),
+    "code-researcher": ("P1", 2.0),
+    "subcontract-writer": ("P1", 2.0),
 }
 
 def list_skills():

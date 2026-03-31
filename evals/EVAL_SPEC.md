@@ -31,8 +31,23 @@ evals/
 │   │   ├── case_01_egress.json
 │   │   ├── case_02_ada.json
 │   │   └── expected/
-│   └── cross-reference-navigator/
-│       ├── case_01.json
+│   ├── cross-reference-navigator/
+│   │   ├── case_01.json
+│   │   └── expected/
+│   ├── bid-tabulator/
+│   │   ├── case_01_single_scope.json
+│   │   ├── case_02_scanned_bids.json
+│   │   ├── case_03_alternates_unit_prices.json
+│   │   └── expected/
+│   ├── code-researcher/
+│   │   ├── case_01_egress.json
+│   │   ├── case_02_accessibility.json
+│   │   ├── case_03_fire_protection.json
+│   │   └── expected/
+│   └── subcontract-writer/
+│       ├── case_01_with_template.json
+│       ├── case_02_no_template.json
+│       ├── case_03_pdf_template.json
 │       └── expected/
 ├── runners/
 │   ├── run_eval.py           ← orchestrates a single test case
@@ -173,6 +188,62 @@ Each test case is a JSON file:
 
 **Important:** Code compliance findings must be validated by a licensed professional. Eval measures whether the skill flags the right areas, not whether its determination is final.
 
+### P1: bid-tabulator
+
+| Case | Input | Validates |
+|---|---|---|
+| 01 | 8 bid PDFs for single scope (text-layer) | Bidder detection, base bid extraction, line item capture, exclusions/qualifications, scope gap flagging |
+| 02 | Scanned bid PDFs (no text layer) | Vision fallback, data extraction from rasterized pages, [unclear] flagging |
+| 03 | Bids with alternates, unit prices, allowances | Alternate extraction (add/deduct), unit price capture with units, cross-bidder alignment |
+
+**Key metrics:**
+- Base bid amount accuracy (within $1 tolerance)
+- Line item recall (% of actual items captured per bidder)
+- Exclusion/qualification recall
+- Scope gap detection (items in some bids but not others)
+- No normalization of as-submitted data (engineer handles this)
+- Excel output validity (all required tabs, low bid highlighted)
+
+**Ground truth:** Manually extract all data from each bid PDF — base amounts, line items, exclusions, qualifications, alternates, unit prices.
+
+### P1: code-researcher (replaces code-compliance-checker)
+
+| Case | Input | Validates |
+|---|---|---|
+| 01 | Floor plan — egress research | Jurisdiction identification, IBC egress section citations, research framing (not compliance) |
+| 02 | Floor plan — accessibility research | Multi-standard coverage (ADA + ANSI A117.1 + state), layered requirements |
+| 03 | Floor plans — fire protection research | IBC Chapter 7 + NFPA 13/72/101 citations, construction type table references |
+
+**Key metrics:**
+- Jurisdiction accuracy (correct state/local code edition identified)
+- Code citation accuracy (correct IBC/NFPA/ADA section references)
+- Topic coverage (% of relevant research topics included)
+- Research framing (zero COMPLIANT/NON-COMPLIANT determinations — all informational)
+- Uncertainty handling (findings tagged confirmed/needs_review/uncertain appropriately)
+- Human-in-the-loop (outline presented for user confirmation before deep research)
+
+**Important:** This is a RESEARCH tool, not a compliance checker. Eval measures whether the skill identifies the right codes and requirements, not whether it makes compliance determinations. All findings must be framed as informational research for PE/architect review.
+
+**Ground truth:** Licensed PE/architect documents applicable codes, editions, jurisdiction amendments, and code section references for each research topic.
+
+### P1: subcontract-writer
+
+| Case | Input | Validates |
+|---|---|---|
+| 01 | .docx template + specs — finishes scope | Template parsing, template preservation, spec section references, drawing references |
+| 02 | No template — structural steel scope | Fallback document generation, article structure, Division 05 references, placeholder handling |
+| 03 | PDF template + specs — HVAC scope | PDF template parsing, trade-specific language, multi-discipline drawing references |
+
+**Key metrics:**
+- Template preservation (standard clauses unchanged)
+- Spec section reference accuracy (correct CSI sections for scope)
+- Drawing sheet reference accuracy
+- Contract documents list completeness and order
+- Professional language quality (human-rated)
+- .docx output validity
+
+**Ground truth:** PM reviews generated subcontract against firm template and project documents. Scores on scope reference completeness, template fidelity, and language quality.
+
 ### P2: cross-reference-navigator
 
 | Case | Input | Validates |
@@ -241,6 +312,21 @@ When providing construction documents for evals, also create ground truth for ea
 
 ### For cross-references:
 - Manually trace all callouts and record source → target mappings
+
+### For bid tabulation:
+- Manually extract from each bid PDF: company name, base bid amount, all line items (as-submitted), exclusions, qualifications, alternates (with add/deduct), unit prices (with units)
+- Create per-bidder CSVs with exact values from the documents
+
+### For code research:
+- Licensed PE/architect documents applicable codes, correct editions, jurisdiction amendments
+- Record code section references for each research topic
+- Note which requirements are federal baseline vs state/local additions
+
+### For subcontract writing:
+- PM reviews generated document against firm template and project specs
+- Verify correct spec sections referenced for the trade scope
+- Verify template standard clauses preserved unchanged
+- Rate language quality on 1-5 scale
 
 ## Running Evals
 

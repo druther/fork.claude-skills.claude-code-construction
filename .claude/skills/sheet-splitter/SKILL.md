@@ -32,10 +32,11 @@ Sheet Split Progress:
 ### Step 1: Check if Drawings Are Already Split
 
 Look for individual sheet PDFs. Drawings are already split if:
+- **AgentCM**: `.construction/index/sheet_index.yaml` exists with individual sheet entries and file paths point to split PDFs
 - Multiple PDFs exist with sheet number patterns in filenames (e.g., `A-1.1 - FLOOR PLAN.pdf`)
-- A `sheet_index.yaml` exists
+- A `sheet_index.yaml` exists in the drawings directory
 
-If already split, report the count and skip.
+If already split, report the count and skip. If AgentCM has the sheet index but files haven't been physically split on disk, offer to split using the existing metadata for naming.
 
 ### Step 2: Find ALL Drawing PDFs
 

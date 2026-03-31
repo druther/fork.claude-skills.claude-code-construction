@@ -5,6 +5,10 @@ import argparse
 import json
 import sys
 from datetime import datetime
+from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
+from shared import safe_output_path
 
 def submittal_log_to_xlsx(data_path, output="submittal_register.xlsx", project=""):
     try:
@@ -88,8 +92,9 @@ def submittal_log_to_xlsx(data_path, output="submittal_register.xlsx", project="
         summary.cell(row=r, column=1, value=t)
         summary.cell(row=r, column=2, value=count)
 
-    wb.save(output)
-    print(f"OK: {output} ({len(items)} submittals)")
+    out = safe_output_path(output)
+    wb.save(str(out))
+    print(f"OK: {out} ({len(items)} submittals)")
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Convert submittal data to Excel register")

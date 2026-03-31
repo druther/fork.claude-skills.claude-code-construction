@@ -5,6 +5,10 @@ import argparse
 import json
 import sys
 from datetime import datetime
+from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
+from shared import safe_output_path
 
 def schedule_to_xlsx(data_path, output="schedule.xlsx", schedule_type="generic",
                      project="", sheet=""):
@@ -97,8 +101,9 @@ def schedule_to_xlsx(data_path, output="schedule.xlsx", schedule_type="generic",
         meta.cell(row=r, column=1, value=k).font = Font(bold=True)
         meta.cell(row=r, column=2, value=str(v))
 
-    wb.save(output)
-    print(f"OK: {output} ({len(rows)} rows, {len(headers)} columns)")
+    out = safe_output_path(output)
+    wb.save(str(out))
+    print(f"OK: {out} ({len(rows)} rows, {len(headers)} columns)")
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Convert schedule data to Excel")

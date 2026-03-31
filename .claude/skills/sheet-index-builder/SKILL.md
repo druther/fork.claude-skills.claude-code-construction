@@ -11,23 +11,26 @@ description: Build or update a navigable index of construction drawing sheets us
 
 Creates a YAML index of every drawing sheet with number, title, discipline, scale, revision, and page location. This index is the foundation for all drawing navigation.
 
-### Data Mode Detection
+## Step 1: Detect Data Mode
 
-Check for `.construction/` directory in the project root:
+Check for `.construction/` directory in the project root. See parent CLAUDE.md for the full graph-guided cascade and tool reference.
 
-**AgentCM present**: Read structured data from `.construction/` — pre-indexed sheets, parsed specs, OCR annotations, resolved cross-references. Fast and token-efficient.
+### AgentCM Fast Path
 
-**Vision fallback**: Use Claude Code vision on rasterized PDFs plus `pdfplumber` for text extraction:
-```bash
-${CLAUDE_SKILL_DIR}/../../bin/construction-python ${CLAUDE_SKILL_DIR}/../../scripts/pdf/rasterize_page.py {pdf_path} {page} --dpi 200 --output page.png
-```
+**If `.construction/index/sheet_index.yaml` exists**: The index is already built by the platform. Read it and present the summary:
+- Total sheet count by discipline
+- Sheets with missing titles or "unknown" discipline (may need manual review)
+- Any sheets marked with non-standard numbering
 
+Only rebuild if the user explicitly requests it or new drawing files are detected that aren't in the index.
 
-**AgentCM present?** Read `.construction/index/sheet_index.yaml` — already built. Only rebuild if user requests or new files detected.
+**If AgentCM graph also exists**: Read `.construction/graph/graph_summary.yaml` to report additional context — how many views, rooms, elements, and callout edges are associated with the indexed sheets.
 
-**No AgentCM?** Build from scratch using vision on title blocks.
+### Vision Build Path (No AgentCM)
 
-## Workflow
+Build from scratch using vision + PDF tools on title blocks.
+
+## Workflow (Vision Build)
 
 ```
 Index Progress:

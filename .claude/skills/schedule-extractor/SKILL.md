@@ -10,21 +10,42 @@ argument-hint: "<sheet_number> [schedule_type]"
 
 # Schedule Extractor
 
-Extracts tabular schedule data embedded in drawing sheets or spec pages and outputs structured Excel files. Schedules are typically one element among many on a sheet, so this skill handles locating, isolating, and extracting them.
+Extracts tabular schedule data embedded in drawing sheets or spec pages and outputs structured Excel files. Schedules are typically one element among many on a sheet — or the entire sheet may be a schedule.
 
 ## Workflow
 
 ```
 Extraction Progress:
-- [ ] Step 1: Locate the schedule on the sheet
+- [ ] Step 1: Discover schedule locations
 - [ ] Step 2: Isolate (crop) the schedule region
-- [ ] Step 3: Extract structured data (vision + pdfplumber)
+- [ ] Step 3: Extract structured data (pdfplumber + vision)
 - [ ] Step 4: Validate and clean data
 - [ ] Step 5: Output to Excel
 - [ ] Step 6: Write graph entry
 ```
 
-### Step 1: Locate the Schedule
+### Step 1: Discover Schedule Locations
+
+Use a multi-source discovery approach, checking all available sources:
+
+#### Source A — Sheet titles in sheet index (primary, most reliable)
+
+Search `.construction/index/sheet_index.yaml` (or the sheet index you've built) for sheets with "SCHEDULE" in the title. Many important schedules occupy an **entire sheet** — the sheet title tells you exactly what it is:
+- "DOOR SCHEDULE" → entire sheet is a door schedule
+- "FINISH SCHEDULE" or "ROOM FINISH SCHEDULE" → entire sheet is finishes
+- "WINDOW SCHEDULE" → entire sheet is windows
+- "PANEL SCHEDULE" → electrical panel schedule
+- "FIXTURE SCHEDULE" → plumbing fixtures
+
+For dedicated schedule sheets, the entire page is the extraction target — no need to crop.
+
+#### Source B — Navigation graph schedule nodes (supplementary, WIP)
+
+If `.construction/graph/navigation_graph.json` exists, check `scheduleTables[]` for `GraphScheduleTable` entries with bounding regions. These identify embedded schedules on non-schedule sheets.
+
+**Note**: Schedule bounding region detection is still being refined — treat these as hints, not definitive boundaries. Always verify with vision.
+
+#### Source C — Discipline-based heuristics
 
 Schedules appear on specific sheet types:
 - **Door schedule** → typically on A-0.XX or A-8.XX sheets, or a dedicated sheet
@@ -34,12 +55,9 @@ Schedules appear on specific sheet types:
 - **Fixture schedule** → P-X.XX plumbing sheets
 - **Equipment schedule** → M-X.XX mechanical sheets
 
-**Finding the schedule:**
+#### Source D — Vision scan (fallback)
 
-1. Check sheet index for sheets with "SCHEDULE" in the title
-2. If not obvious, rasterize likely sheets at 150 DPI and use vision to scan for tabular regions
-3. Schedules have a distinctive grid pattern — rows and columns with headers
-
+If no index or graph is available:
 ```bash
 ${CLAUDE_SKILL_DIR}/../../bin/construction-python ${CLAUDE_SKILL_DIR}/../../scripts/pdf/rasterize_page.py {pdf_path} {page} --dpi 150 --output full_sheet.png
 ```
@@ -48,8 +66,11 @@ Use vision on the full sheet image: "Identify any tabular schedules on this draw
 
 ### Step 2: Isolate the Schedule Region
 
-Crop the identified region with padding:
+**For dedicated schedule sheets** (entire page is a schedule): Skip cropping — use the full page.
 
+**For embedded schedules** (schedule is one element on a larger sheet):
+
+Crop the identified region with padding:
 ```bash
 ${CLAUDE_SKILL_DIR}/../../bin/construction-python ${CLAUDE_SKILL_DIR}/../../scripts/pdf/crop_region.py full_sheet.png \
   --box {x1},{y1},{x2},{y2} \
@@ -58,7 +79,6 @@ ${CLAUDE_SKILL_DIR}/../../bin/construction-python ${CLAUDE_SKILL_DIR}/../../scri
 ```
 
 Re-rasterize at higher DPI (300) for the cropped region to improve text clarity:
-
 ```bash
 ${CLAUDE_SKILL_DIR}/../../bin/construction-python ${CLAUDE_SKILL_DIR}/../../scripts/pdf/rasterize_page.py {pdf_path} {page} \
   --dpi 300 \
@@ -142,7 +162,7 @@ After extraction (by either method):
 - **Merged cell cleanup**: Expand merged header cells (e.g., "WALLS" spanning A/B/C/D sub-columns)
 - **Normalize dimensions**: `3' - 0"` → `3'-0"` (remove spaces around dashes)
 - **Flag revisions**: Note any cells within revision clouds or delta markers
-- **Cross-reference**: For door schedules, verify door numbers match tags on floor plans
+- **Cross-reference with graph**: If AgentCM rooms/elements exist, verify door numbers match `ElementNode` tags, room numbers match `RoomNode` entries
 
 ### Step 5: Output to Excel
 
@@ -150,7 +170,7 @@ After extraction (by either method):
 ${CLAUDE_SKILL_DIR}/../../bin/construction-python ${CLAUDE_SKILL_DIR}/../../scripts/excel/schedule_to_xlsx.py \
   --data schedule_data.json \
   --type door_schedule \
-  --project "Dover High School" \
+  --project "Project Name" \
   --sheet "A-0.01" \
   --output "Door_Schedule_A-0.01.xlsx"
 ```
