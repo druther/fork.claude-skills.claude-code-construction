@@ -81,3 +81,6 @@ browse/
 .claude/skills/code-reviewer
 docs/DISTRIBUTION_SPEC.md
 docs/construction-skills.code-workspace
+
+.claude/skills/tag-audit-and-takeoff/references/_deprecated_qto_aggregate.py
+.claude/skills/tag-audit-and-takeoff/references/_deprecated_spatial_query.py
